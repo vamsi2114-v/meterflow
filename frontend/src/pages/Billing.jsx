@@ -1,12 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import axios from 'axios'
-
-const api = axios.create({ baseURL: 'http://localhost:5000' })
-api.interceptors.request.use(cfg => {
-  cfg.headers.Authorization = `Bearer ${localStorage.getItem('accessToken')}`
-  return cfg
-})
+import api from '../api'
 
 export default function Billing() {
   const [summary, setSummary] = useState(null)

@@ -1,16 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import axios from 'axios'
+import api from '../api'
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, BarChart, Bar
 } from 'recharts'
-
-const api = axios.create({ baseURL: 'http://localhost:5000' })
-api.interceptors.request.use(cfg => {
-  cfg.headers.Authorization = `Bearer ${localStorage.getItem('accessToken')}`
-  return cfg
-})
 
 export default function Usage() {
   const [summary, setSummary] = useState(null)
@@ -96,25 +90,17 @@ export default function Usage() {
           </select>
         </div>
 
-        {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
           <StatCard title="Total Requests" value={summary?.totalRequests ?? 0} color="indigo" />
           <StatCard title="Success (2xx)" value={summary?.successRequests ?? 0} color="green" />
           <StatCard title="Errors (4xx/5xx)" value={summary?.errorRequests ?? 0} color="red" />
-          <StatCard
-            title="Avg Latency"
-            value={summary?.avgLatency ? Math.round(summary.avgLatency) + 'ms' : '—'}
-            color="blue"
-          />
+          <StatCard title="Avg Latency" value={summary?.avgLatency ? Math.round(summary.avgLatency) + 'ms' : '—'} color="blue" />
         </div>
 
-        {/* Requests over time */}
         <div className="bg-gray-900 rounded-2xl p-6 mb-6">
           <h3 className="text-lg font-semibold mb-6">Requests Over Time</h3>
           {chartData.length === 0 ? (
-            <div className="text-center py-16 text-gray-500">
-              No data yet — make some API calls through the gateway!
-            </div>
+            <div className="text-center py-16 text-gray-500">No data yet — make some API calls through the gateway!</div>
           ) : (
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={chartData}>
@@ -129,7 +115,6 @@ export default function Usage() {
           )}
         </div>
 
-        {/* Top endpoints */}
         <div className="bg-gray-900 rounded-2xl p-6 mb-6">
           <h3 className="text-lg font-semibold mb-6">Top Endpoints</h3>
           {endpointData.length === 0 ? (
@@ -147,7 +132,6 @@ export default function Usage() {
           )}
         </div>
 
-        {/* Top endpoints table */}
         {topEndpoints.length > 0 && (
           <div className="bg-gray-900 rounded-2xl p-6">
             <h3 className="text-lg font-semibold mb-6">Endpoint Details</h3>
